@@ -1,0 +1,7 @@
+node_modules
+build
+.eslintcache
+
+# sublime
+*.sublime-project
+*.sublime-workspace

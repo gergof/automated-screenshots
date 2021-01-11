@@ -1,12 +1,15 @@
-import BaseAgent from '../BaseAgent';
-import { AndroidAgentConfig } from './AndroidAgentConfig';
-import Screenshot from '../../Screenshot';
 import { ChildProcess } from 'child_process';
-import kill from 'tree-kill';
-import moment from 'moment';
 import fs from 'fs';
 import path from 'path';
+
+import kill from 'tree-kill';
+import moment from 'moment';
 import filenamify from 'filenamify';
+
+import Screenshot from '../../Screenshot';
+import BaseAgent from '../BaseAgent';
+
+import { AndroidAgentConfig } from './AndroidAgentConfig';
 
 class AndroidAgent extends BaseAgent {
 	config: AndroidAgentConfig;

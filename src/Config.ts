@@ -1,9 +1,11 @@
+import fs from 'fs';
+
 import YAML from 'yaml';
 import * as Yup from 'yup';
-import fs from 'fs';
 
 import { AndroidAgentConfig } from './agents/android/AndroidAgentConfig';
 import { AgentType, AgentConfig } from './agents/types';
+import { IosAgentConfig } from './agents/ios/IosAgentConfig';
 
 const schema = Yup.object().shape({
 	port: Yup.number()
@@ -102,7 +104,7 @@ const schema = Yup.object().shape({
 class Config {
 	configContents: Record<string, number | any[]> = {};
 	port = 6000;
-	agents: (AgentConfig | AndroidAgentConfig)[] = [];
+	agents: (AgentConfig | AndroidAgentConfig | IosAgentConfig)[] = [];
 
 	constructor(file: string) {
 		const fileContents = fs.readFileSync(file, 'utf-8');
@@ -131,27 +133,42 @@ class Config {
 			this.port = config.port;
 			this.agents = config.agents
 				.map(agentConfig => {
-					if (agentConfig.type == 'android') {
-						const config: AndroidAgentConfig = {
-							type: AgentType.android,
-							output: agentConfig.output,
-							startAppCommand: agentConfig.startAppCommand,
-							startAppTimeout: agentConfig.startAppTimeout,
-							paths: {
-								adb: agentConfig.paths.adb,
-								emulator: agentConfig.paths.emulator,
-								sdkManager: agentConfig.paths.sdkManager,
-								avdManager: agentConfig.paths.avdManager
-							},
-							devices: agentConfig.devices || [],
-							time: agentConfig.time,
-							clearNotifications: agentConfig.clearNotifications
-						};
+					switch (agentConfig.type) {
+						case 'android': {
+							const config: AndroidAgentConfig = {
+								type: AgentType.android,
+								output: agentConfig.output,
+								startAppCommand: agentConfig.startAppCommand,
+								startAppTimeout: agentConfig.startAppTimeout,
+								paths: {
+									adb: agentConfig.paths.adb,
+									emulator: agentConfig.paths.emulator,
+									sdkManager: agentConfig.paths.sdkManager,
+									avdManager: agentConfig.paths.avdManager
+								},
+								devices: agentConfig.devices || [],
+								time: agentConfig.time,
+								clearNotifications:
+									agentConfig.clearNotifications
+							};
 
-						return config;
+							return config;
+						}
+						case 'ios': {
+							const config: IosAgentConfig = {
+								type: AgentType.ios,
+								output: agentConfig.output,
+								startAppCommand: agentConfig.startAppCommand,
+								startAppTimeout: agentConfig.startAppTimeout,
+								devices: agentConfig.devices || [],
+								time: agentConfig.time
+							};
+
+							return config;
+						}
+						default:
+							return null;
 					}
-
-					return null;
 				})
 				.reduce((acc: AgentConfig[], cur: AgentConfig | null) => {
 					if (cur != null) {

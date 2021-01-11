@@ -15,9 +15,9 @@ agents:
     clearNotifications: true
     time: 1610352398
   - type: ios
-    startAppCommand: npm run ios
+    startAppCommand: echo "TEST!!!"
     startAppTimeout: 900000
     output: screenshots/ios
     devices:
-      - com.apple.CoreSimulator.SimDeviceType.iPhone-7;com.apple.CoreSimulator.SimRuntime.iOS-10–3
+      - com.apple.CoreSimulator.SimDeviceType.iPhone-7;com.apple.CoreSimulator.SimRuntime.iOS-14-0
     time: 1610352398

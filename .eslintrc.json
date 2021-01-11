@@ -21,6 +21,7 @@
         "prettier/prettier": 2,
         "import/no-dynamic-require": 2,
         "import/no-useless-path-segments": 1,
+        "import/order": [1, { "newlines-between": "always" }],
         "@typescript-eslint/no-explicit-any": 0,
         "@typescript-eslint/no-empty-function": 0
     }

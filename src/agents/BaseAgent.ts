@@ -1,11 +1,14 @@
 import { exec, spawn, ChildProcess } from 'child_process';
-import { AgentConfig } from './types';
+import stream from 'stream';
+
+import chalk from 'chalk';
+
 import ClientManager from '../ClientManager';
 import ScreenshotPack from '../ScreenshotPack';
-import chalk from 'chalk';
-import stream from 'stream';
 import Screenshot from '../Screenshot';
 import ScreenshotSuite from '../ScreenshotSuite';
+
+import { AgentConfig } from './types';
 
 abstract class BaseAgent {
 	agentName: string;
@@ -81,7 +84,11 @@ abstract class BaseAgent {
 			warn: chalk.yellow.bold('[WARN ]')
 		};
 
-		console.log(levels[level], this.agentName, '-', ...message);
+		console.log(
+			levels[level],
+			chalk.gray('[' + this.agentName + ']'),
+			...message
+		);
 	}
 
 	protected cmdExec(
@@ -103,12 +110,28 @@ abstract class BaseAgent {
 				this.log(
 					'warn',
 					'Subprocess (' + command + '):',
-					chunk.toString('utf-8')
+					chunk.toString('utf-8').trim()
 				);
 			});
 
 			proc.on('close', code => {
 				resolve(code || 0);
+			});
+		});
+	}
+
+	protected cmdExecOutput(command: string, args: string[]): Promise<string> {
+		return new Promise(resolve => {
+			const proc = this.cmdSpawn(command, args);
+
+			let output = '';
+
+			proc.stdio[1]?.on('data', chunk => {
+				output = output + chunk.toString('utf-8');
+			});
+
+			proc.on('close', () => {
+				resolve(output);
 			});
 		});
 	}
@@ -123,7 +146,7 @@ abstract class BaseAgent {
 			this.log(
 				'warn',
 				'Subprocess (' + command + '):',
-				chunk.toString('utf-8')
+				chunk.toString('utf-8').trim()
 			);
 		});
 

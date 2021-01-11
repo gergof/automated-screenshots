@@ -1,7 +1,9 @@
+import http, { Server as httpServer } from 'http';
+
 import { server as WebSocketServer } from 'websocket';
 import type { connection } from 'websocket';
+
 import type { Message } from './types';
-import http, { Server as httpServer } from 'http';
 import ScreenshotPack from './ScreenshotPack';
 
 export interface ClientManagerConfig {

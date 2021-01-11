@@ -1,10 +1,12 @@
 export enum MessageType {
-	PrepareScreenshot = 'prepare',
+	PrepareSuite = 'prepare-suite',
+	PrepareScreenshot = 'prepare-screenshot',
 	Ready = 'ready',
-	ScreenshotDone = 'done'
+	ScreenshotDone = 'done-screenshot',
+	SuiteDone = 'done-suite'
 }
 
 export type Message = {
 	type: MessageType;
-	payload: string;
+	payload?: string;
 };

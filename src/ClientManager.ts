@@ -14,12 +14,16 @@ class ClientManager {
 	wsServer: WebSocketServer | null = null;
 	client: connection | null = null;
 	isInitialized = false;
+	screenshotPack: ScreenshotPack | null = null;
 
 	constructor(config: ClientManagerConfig) {
 		this.websocketPort = config.port;
 	}
 
 	listen(): Promise<ClientManager> {
+		this.isInitialized = false;
+		this.screenshotPack = null;
+
 		return new Promise(resolve => {
 			this.httpServer = http.createServer((req, resp) => {
 				resp.writeHead(404);
@@ -32,7 +36,9 @@ class ClientManager {
 				autoAcceptConnections: false
 			});
 
-			resolve(this);
+			this.httpServer.listen(this.websocketPort, () => {
+				resolve(this);
+			});
 		});
 	}
 
@@ -52,15 +58,16 @@ class ClientManager {
 				this.client = request.accept();
 
 				this.client.on('message', message => {
-					if (this.isInitialized) {
+					if (!this.isInitialized) {
 						this.isInitialized = true;
 
-						const pack = new ScreenshotPack();
+						const pack = new ScreenshotPack(this);
 
 						if (message.utf8Data) {
 							pack.loadFromJson(JSON.parse(message.utf8Data));
 						}
 
+						this.screenshotPack = pack;
 						resolve(pack);
 					}
 				});

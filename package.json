@@ -5,7 +5,7 @@
   "main": "build/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node src/index.ts",
+    "start": "ts-node --project tsconfig.json src/index.ts",
     "build": "rimraf build && cross-env NODE_ENV=production tsc",
     "typecheck": "tsc --noEmit",
     "lint": "esw --color --ext .ts src",
@@ -38,6 +38,7 @@
   "devDependencies": {
     "@types/node": "^14.14.20",
     "@types/websocket": "^1.0.1",
+    "@types/yup": "^0.29.11",
     "@typescript-eslint/eslint-plugin": "^4.12.0",
     "@typescript-eslint/parser": "^4.12.0",
     "cross-env": "^7.0.3",
@@ -55,9 +56,10 @@
   "dependencies": {
     "chalk": "^4.1.0",
     "commander": "^6.2.1",
-    "convict": "^6.0.0",
+    "tree-kill": "^1.2.2",
     "websocket": "^1.0.33",
-    "yaml": "^1.10.0"
+    "yaml": "^1.10.0",
+    "yup": "^0.32.8"
   },
   "standard-version": {
     "types": [

@@ -1,125 +1,167 @@
-import convict from 'convict';
 import YAML from 'yaml';
+import * as Yup from 'yup';
+import fs from 'fs';
 
-import BaseAgent from './agents/BaseAgent';
+import { AndroidAgentConfig } from './agents/android/AndroidAgentConfig';
+import { AgentType, AgentConfig } from './agents/types';
 
-convict.addFormat({
-	name: 'array-of',
-	validate: (sources: any, schema: any): void => {
-		if (!Array.isArray(sources)) {
-			throw new Error('must be of type Array');
-		}
+const schema = Yup.object().shape({
+	port: Yup.number()
+		.min(1, 'Must be valid port number')
+		.max(65535, 'Must be valid port number')
+		.default(8700),
+	agents: Yup.array()
+		.of(
+			Yup.object().shape({
+				type: Yup.string().oneOf(['android', 'ios', 'web']).required(),
+				output: Yup.string().required(),
+				startAppCommand: Yup.string().required(),
+				startAppTimeout: Yup.number().min(1).required(),
 
-		for (const source of sources) {
-			convict(schema.children).load(source).validate();
-		}
-	}
+				// android only
+				paths: Yup.object().when(
+					'type',
+					(type: string, schema: any) => {
+						if (type == 'android') {
+							return schema
+								.shape({
+									adb: Yup.string().required(),
+									emulator: Yup.string().required(),
+									sdkManager: Yup.string().required(),
+									avdManager: Yup.string().required()
+								})
+								.required();
+						} else {
+							return schema.oneOf([undefined]);
+						}
+					}
+				),
+				clearNotifications: Yup.boolean().when(
+					'type',
+					(type: string, schema: any) => {
+						if (type == 'android') {
+							return schema.default(false);
+						} else {
+							return schema.oneOf([undefined]);
+						}
+					}
+				),
+
+				// android + ios only
+				devices: Yup.array()
+					.of(
+						Yup.string()
+							.matches(/[a-zA-Z0-9._-]+;[a-zA-Z0-9._-]+/)
+							.required()
+					)
+					.when('type', (type: string, schema: any) => {
+						if (['android', 'ios'].includes(type)) {
+							return schema.ensure();
+						} else {
+							return schema.oneOf([undefined]);
+						}
+					}),
+				time: Yup.number()
+					.min(0)
+					.when('type', (type: string, schema: any) => {
+						if (['android', 'ios'].includes(type)) {
+							return schema.nullable().default(null);
+						} else {
+							return schema.oneOf([undefined]);
+						}
+					}),
+
+				// web only
+				url: Yup.string()
+					.url()
+					.when('type', (type: string, schema: any) => {
+						if (type == 'web') {
+							return schema.required();
+						} else {
+							return schema.oneOf([undefined]);
+						}
+					}),
+				screenSizes: Yup.array()
+					.of(
+						Yup.string()
+							.matches(/^[0-9]+x[0-9]+$/)
+							.required()
+					)
+					.when('type', (type: string, schema: any) => {
+						if (type == 'web') {
+							return schema.ensure();
+						} else {
+							return schema.oneOf([undefined]);
+						}
+					})
+			})
+		)
+		.ensure()
 });
 
-convict.addParser({ estension: ['yml', 'yaml'], parser: YAML.parse });
-
 class Config {
+	configContents: Record<string, number | any[]> = {};
 	port = 6000;
-	agents: BaseAgent[] = [];
+	agents: (AgentConfig | AndroidAgentConfig)[] = [];
 
 	constructor(file: string) {
-		const config = convict({
-			port: {
-				doc:
-					'Port to open the ws server on (used for communication with the clients',
-				format: 'port',
-				default: 6000
-			},
-			agents: {
-				doc: 'Agents which will take the screenshots',
-				format: 'array-of',
-				default: [],
-				children: {
-					type: {
-						doc: 'Type of parser',
-						format: ['android', 'ios', 'web'],
-						default: null
-					},
-					output: {
-						doc: 'Output folder for screenshots',
-						format: String,
-						default: null
-					},
-					startAppCommand: {
-						doc: 'Command to start the app with',
-						format: String,
-						default: null
-					},
-					startAppTimeout: {
-						doc:
-							'If the app fails to start within this timeout the agent will fail',
-						format: 'int',
-						default: null
-					},
+		const fileContents = fs.readFileSync(file, 'utf-8');
 
-					// android agent:
-					paths: {
-						adb: {
-							doc: 'Path to ADB executable',
-							format: String,
-							default: null
-						},
-						emulator: {
-							doc: 'Path to emulator executable',
-							format: String,
-							default: null
-						},
-						sdkManager: {
-							doc: 'Path to sdkmanager executable',
-							format: String,
-							default: null
-						},
-						avdManager: {
-							doc: 'Path to avdmanager executable',
-							format: String,
-							default: null
-						}
-					},
-					clearNotifications: {
-						doc:
-							'Set to true to clear notifications before taking a screenshot',
-						format: Boolean,
-						default: false
-					},
+		let config = null;
 
-					// android + ios agent:
-					devices: {
-						doc: 'Devices to take screenshots on',
-						format: 'array-of',
-						default: [],
-						children: String
-					},
-					time: {
-						doc: 'Unix timestamp to set the clock to',
-						format: 'int',
-						default: 0
-					},
+		if (/.(?:yml|yaml)$/.exec(file)) {
+			config = YAML.parse(fileContents);
+		}
 
-					// web agent:
-					url: {
-						doc: 'The URL to open in the browser',
-						format: String,
-						default: null
-					},
-					screenSizes: {
-						doc:
-							'Screen sizes to take screenshots on defined as WIDTHxHEIGHT (ex: 1920x1080)',
-						format: 'array-of',
-						default: [],
-						children: String
+		if (/.(?:json)$/.exec(file)) {
+			config = JSON.parse(fileContents);
+		}
+
+		if (config == null) {
+			throw new Error(
+				'Unsupported config file format. Please use json or yml'
+			);
+		}
+
+		this.configContents = config;
+	}
+
+	validate(): Promise<Config> {
+		return schema.validate(this.configContents).then(config => {
+			this.port = config.port;
+			this.agents = config.agents
+				.map(agentConfig => {
+					if (agentConfig.type == 'android') {
+						const config: AndroidAgentConfig = {
+							type: AgentType.android,
+							output: agentConfig.output,
+							startAppCommand: agentConfig.startAppCommand,
+							startAppTimeout: agentConfig.startAppTimeout,
+							paths: {
+								adb: agentConfig.paths.adb,
+								emulator: agentConfig.paths.emulator,
+								sdkManager: agentConfig.paths.sdkManager,
+								avdManager: agentConfig.paths.avdManager
+							},
+							devices: agentConfig.devices || [],
+							time: agentConfig.time,
+							clearNotifications: agentConfig.clearNotifications
+						};
+
+						return config;
 					}
-				}
-			}
+
+					return null;
+				})
+				.reduce((acc: AgentConfig[], cur: AgentConfig | null) => {
+					if (cur != null) {
+						return [...acc, cur];
+					}
+					return acc;
+				}, []);
+
+			return this;
 		});
-
-		config.loadFile(file);
-
-		this.port = config.port;
 	}
 }
 

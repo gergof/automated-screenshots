@@ -1,6 +1,6 @@
 import type { AgentConfig, AgentType } from '../types';
 
-export interface Config extends AgentConfig {
+export interface AndroidAgentConfig extends AgentConfig {
 	type: AgentType.android;
 	paths: {
 		adb: string;
@@ -9,8 +9,8 @@ export interface Config extends AgentConfig {
 		avdManager: string;
 	};
 
-	devices: [string];
+	devices: string[];
 
-	time?: string;
+	time?: number;
 	clearNotifications?: boolean;
 }

@@ -1,5 +1,6 @@
 import ScreenshotSuite from './ScreenshotSuite';
 import Screenshot from './Screenshot';
+import ClientManager from './ClientManager';
 
 interface ScreenshotPackJson {
 	suites: [
@@ -16,13 +17,30 @@ interface ScreenshotPackJson {
 
 class ScreenshotPack {
 	suites: ScreenshotSuite[] = [];
+	clientManager: ClientManager;
+
+	constructor(clientManager: ClientManager) {
+		this.clientManager = clientManager;
+	}
 
 	loadFromJson(json: ScreenshotPackJson): ScreenshotPack {
 		this.suites = json.suites.map(suite => {
-			const screenshots: Screenshot[] = suite.screenshots.map(
-				screenshot => new Screenshot(screenshot.name)
+			const screenshotSuite = new ScreenshotSuite(
+				suite.name,
+				this.clientManager
 			);
-			return new ScreenshotSuite(screenshots);
+
+			suite.screenshots.forEach(screenshot => {
+				screenshotSuite.addScreenshot(
+					new Screenshot(
+						screenshot.name,
+						screenshotSuite,
+						this.clientManager
+					)
+				);
+			});
+
+			return screenshotSuite;
 		});
 
 		return this;

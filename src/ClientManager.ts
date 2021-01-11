@@ -71,6 +71,12 @@ class ClientManager {
 						resolve(pack);
 					}
 				});
+
+				this.client.on('close', () => {
+					this.isInitialized = false;
+					this.screenshotPack = null;
+					this.client = null;
+				});
 			});
 		});
 	}

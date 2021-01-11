@@ -12,6 +12,8 @@ agents:
     devices:
       - pixel_4;28
       - pixel_c;26
+    clearNotifications: true
+    time: 1610352398
   - type: ios
     startAppCommand: npm run ios
     startAppTimeout: 900000

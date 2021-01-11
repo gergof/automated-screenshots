@@ -10,10 +10,12 @@ import ScreenshotSuite from '../ScreenshotSuite';
 abstract class BaseAgent {
 	agentName: string;
 	config: AgentConfig;
+	port: number;
 	clientManager: ClientManager;
 
 	constructor(config: AgentConfig, port: number) {
 		this.config = config;
+		this.port = port;
 		this.clientManager = new ClientManager({ port });
 		this.agentName = 'base';
 	}
@@ -119,7 +121,7 @@ abstract class BaseAgent {
 
 		proc.stdio[2].on('data', chunk => {
 			this.log(
-				'error',
+				'warn',
 				'Subprocess (' + command + '):',
 				chunk.toString('utf-8')
 			);

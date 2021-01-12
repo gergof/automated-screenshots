@@ -15,6 +15,9 @@
     "format": "prettier --write src",
     "release": "standard-version"
   },
+  "files": [
+    "build/**/*"
+  ],
   "bin": {
     "automated-screenshots": "./build/index.js"
   },

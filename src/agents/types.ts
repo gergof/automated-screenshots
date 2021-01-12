@@ -1,7 +1,8 @@
 export enum AgentType {
 	android = 'android',
 	ios = 'ios',
-	web = 'web'
+	web = 'web',
+	dummy = 'dummy'
 }
 
 export interface AgentConfig {

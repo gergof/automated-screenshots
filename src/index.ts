@@ -8,6 +8,7 @@ import BaseAgent from './agents/BaseAgent';
 import { AgentType } from './agents/types';
 import IosAgent from './agents/ios/IosAgent';
 import { IosAgentConfig } from './agents/ios/IosAgentConfig';
+import DummyAgent from './agents/dummy/DummyAgent';
 
 program
 	.version('@VERSION@', '-v, --version')
@@ -51,6 +52,12 @@ if (process.config) {
 									config.port
 								);
 								break;
+							case AgentType.dummy:
+								agent = new DummyAgent(
+									agentConfig,
+									config.port
+								);
+								break;
 							default:
 								agent = null;
 						}
@@ -82,7 +89,13 @@ if (process.config) {
 								);
 							});
 					});
-				}, Promise.resolve());
+				}, Promise.resolve())
+				.then(() => {
+					console.log(
+						chalk.green.bold('[DONE ]'),
+						'Finished taking screenshots'
+					);
+				});
 		})
 		.catch(e => {
 			console.log(

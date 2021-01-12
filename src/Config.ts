@@ -15,7 +15,9 @@ const schema = Yup.object().shape({
 	agents: Yup.array()
 		.of(
 			Yup.object().shape({
-				type: Yup.string().oneOf(['android', 'ios', 'web']).required(),
+				type: Yup.string()
+					.oneOf(['android', 'ios', 'web', 'dummy'])
+					.required(),
 				output: Yup.string().required(),
 				startAppCommand: Yup.string().required(),
 				startAppTimeout: Yup.number().min(1).required(),
@@ -162,6 +164,16 @@ class Config {
 								startAppTimeout: agentConfig.startAppTimeout,
 								devices: agentConfig.devices || [],
 								time: agentConfig.time
+							};
+
+							return config;
+						}
+						case 'dummy': {
+							const config: AgentConfig = {
+								type: AgentType.dummy,
+								output: agentConfig.output,
+								startAppCommand: agentConfig.startAppCommand,
+								startAppTimeout: agentConfig.startAppTimeout
 							};
 
 							return config;

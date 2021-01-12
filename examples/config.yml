@@ -21,3 +21,7 @@ agents:
     devices:
       - com.apple.CoreSimulator.SimDeviceType.iPhone-7;com.apple.CoreSimulator.SimRuntime.iOS-14-0
     time: 1610352398
+  - type: dummy
+    startAppCommand: echo "TEST!!!"
+    startAppTimeout: 1000
+    output: screenshots/dummy

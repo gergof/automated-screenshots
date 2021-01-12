@@ -70,6 +70,9 @@
     "yup": "^0.32.8"
   },
   "standard-version": {
+    "scripts": {
+      "prerelease": "git fetch --all --tags"
+    },
     "types": [
       {
         "type": "feat",

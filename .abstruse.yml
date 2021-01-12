@@ -1,6 +1,6 @@
 image: nodejs
 branches:
-  - master
+  - main
   - tags/*
 matrix:
   - env: SCRIPT=lint

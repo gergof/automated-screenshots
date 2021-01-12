@@ -59,7 +59,7 @@ class ClientManager {
 
 				this.client = request.accept();
 
-				this.client.on('message', message => {
+				this.client.once('message', message => {
 					if (!this.isInitialized) {
 						this.isInitialized = true;
 
@@ -91,7 +91,7 @@ class ClientManager {
 			}
 
 			this.client.send(JSON.stringify(command));
-			this.client.on('message', message => {
+			this.client.once('message', message => {
 				if (!message.utf8Data) {
 					reject('Client sent invalid response');
 					return;

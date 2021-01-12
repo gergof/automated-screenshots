@@ -1,7 +1,6 @@
 image: nodejs
 branches:
   - main
-  - tags/*
 matrix:
   - env: SCRIPT=lint
   - env: SCRIPT=typecheck
@@ -9,12 +8,15 @@ install:
   - npm ci
 script:
   - npm run $SCRIPT
-deploy:
-  - npm ci
-  - npm run build
-  - >
-    if [ -z "$ABSTRUSE_TAG" ]; then
-      npm set registry https://registry.npmjs.org
-      npm set //registry.npmjs.org/:_authToken $NPM_TOKEN
-      npm publish
-    fi
+jobs:
+  - image: nodejs
+    stage: deploy
+    branches:
+      - tags/*
+    install:
+      - npm ci
+    script:
+      - npm run build
+      - npm set registry https://registry.npmjs.org
+      - npm set //registry.npmjs.org/:_authToken $NPM_TOKEN
+      - npm publish

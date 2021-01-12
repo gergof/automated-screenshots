@@ -1,8 +1,6 @@
 import { program } from 'commander';
 import chalk from 'chalk';
 
-import info from '../package.json';
-
 import Config from './Config';
 import AndroidAgent from './agents/android/AndroidAgent';
 import { AndroidAgentConfig } from './agents/android/AndroidAgentConfig';
@@ -12,7 +10,7 @@ import IosAgent from './agents/ios/IosAgent';
 import { IosAgentConfig } from './agents/ios/IosAgentConfig';
 
 program
-	.version(info.version, '-v, --version')
+	.version('@VERSION@', '-v, --version')
 	.description('Take automated screenshots using different agents')
 	.requiredOption('-c, --config <file>', 'configuration file in json or yml')
 	.option(

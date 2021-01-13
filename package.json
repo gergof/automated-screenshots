@@ -1,6 +1,6 @@
 {
   "name": "automated-screenshots",
-  "version": "0.1.3",
+  "version": "1.0.0",
   "description": "Automate taking screenshots of your application and control it directly from your application. Supports taking screenshots from web browsers, android emulators and ios simulators.",
   "main": "build/index.js",
   "scripts": {

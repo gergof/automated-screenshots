@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.3](https://github.com/gergof/automated-screenshots/compare/v0.1.2...v0.1.3) (2021-01-13)
+
+
+### Bug Fixes
+
+* Make index executable ([4a03008](https://github.com/gergof/automated-screenshots/commit/4a030088c82c227c5f3f5f6ce8bec824c6d18837))
+
+
+### Build/CI
+
+* Replace trigger with when ([9328d9f](https://github.com/gergof/automated-screenshots/commit/9328d9fcb83e71937f4ed4fad84d7ef1f7eafb15))
+* Use drone for automation ([a002974](https://github.com/gergof/automated-screenshots/commit/a002974ddf04c7f22967a6219f02cfd6be584e2d))
+
+
+### Documentation
+
+* Add a proper Readme ([cf3bc8b](https://github.com/gergof/automated-screenshots/commit/cf3bc8b87ee7f8f2f16c7d61ab7f210fe417f786))
+
 ### [0.1.2](https://github.com/gergof/automated-screenshots/compare/v0.1.1...v0.1.2) (2021-01-12)
 
 

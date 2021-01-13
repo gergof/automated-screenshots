@@ -18,7 +18,7 @@ steps:
       - npm run typecheck
   - name: deploy
     image: node
-    trigger:
+    when:
       status:
         - success
       event:

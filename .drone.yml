@@ -1,0 +1,34 @@
+kind: pipeline
+type: docker
+trigger:
+  ref:
+    - refs/heads/main
+    - refs/pull/**
+    - refs/tags/*
+steps:
+  - name: lint
+    image: node
+    commands:
+      - npm ci
+      - npm run lint
+  - name: typecheck
+    image: node
+    commands:
+      - npm ci
+      - npm run typecheck
+  - name: deploy
+    image: node
+    trigger:
+      status:
+        - success
+      event:
+        - tag
+    environment:
+      NPM_TOKEN:
+        from_secret: npm_token
+    commands:
+      - npm ci
+      - npm run build
+      - npm set registry https://registry.npmjs.org
+      - npm set //registry.npmjs.org/:_authToken $NPM_TOKEN
+      - npm publish

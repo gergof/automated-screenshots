@@ -99,7 +99,7 @@ abstract class BaseAgent {
 		return new Promise(resolve => {
 			const proc = spawn(command, args, {
 				shell: true,
-				stdio: 'pipe'
+				stdio: ['pipe', 'ignore', 'pipe']
 			});
 
 			if (yes) {
@@ -122,7 +122,7 @@ abstract class BaseAgent {
 
 	protected cmdExecOutput(command: string, args: string[]): Promise<string> {
 		return new Promise(resolve => {
-			const proc = this.cmdSpawn(command, args);
+			const proc = this.cmdSpawn(command, args, true);
 
 			let output = '';
 
@@ -136,13 +136,17 @@ abstract class BaseAgent {
 		});
 	}
 
-	protected cmdSpawn(command: string, args: string[]): ChildProcess {
+	protected cmdSpawn(
+		command: string,
+		args: string[],
+		output = false
+	): ChildProcess {
 		const proc = spawn(command, args, {
 			shell: true,
-			stdio: 'pipe'
+			stdio: ['ignore', output ? 'pipe' : 'ignore', 'pipe']
 		});
 
-		proc.stdio[2].on('data', chunk => {
+		proc.stdio[2]?.on('data', chunk => {
 			this.log(
 				'warn',
 				'Subprocess (' + command + '):',

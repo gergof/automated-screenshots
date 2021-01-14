@@ -1,7 +1,8 @@
-import { exec, spawn, ChildProcess } from 'child_process';
+import { spawn, ChildProcess } from 'child_process';
 import stream from 'stream';
 
 import chalk from 'chalk';
+import kill from 'tree-kill';
 
 import ClientManager from '../ClientManager';
 import ScreenshotPack from '../ScreenshotPack';
@@ -26,26 +27,43 @@ abstract class BaseAgent {
 	protected startApp(): Promise<BaseAgent> {
 		this.log('info', 'Starting application');
 		return new Promise((resolve, reject) => {
-			exec(
-				this.config.startAppCommand,
-				{
-					timeout: this.config.startAppTimeout,
-					killSignal: 'SIGKILL'
-				},
-				error => {
-					if (error) {
-						this.log(
-							'error',
-							'Failed to start application:',
-							error.message
-						);
-						reject(error);
-					}
+			const proc = this.cmdSpawn(this.config.startAppCommand, []);
 
-					this.log('info', 'Application started');
-					resolve(this);
+			const killTimeout = setTimeout(() => {
+				if (proc.exitCode === null) {
+					this.log('error', 'Stating application exceeded timeout');
+					reject(new Error('startAppTimeout exceeded'));
+					kill(proc.pid);
 				}
-			);
+			}, this.config.startAppTimeout);
+
+			proc.on('exit', code => {
+				clearTimeout(killTimeout);
+				if (code != 0) {
+					this.log(
+						'error',
+						'Failed to start application. Non-zero exit code:',
+						code?.toString() || 'unknown'
+					);
+					reject(
+						new Error(
+							'Process exited with non-zero status code: ' +
+								code?.toString()
+						)
+					);
+					return;
+				}
+
+				resolve(this);
+			});
+
+			proc.on('error', error => {
+				this.log(
+					'error',
+					'Failed to start application:',
+					error.message
+				);
+			});
 		});
 	}
 

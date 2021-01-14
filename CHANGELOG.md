@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.2](https://github.com/gergof/automated-screenshots/compare/v1.0.1...v1.0.2) (2021-01-14)
+
+
+### Bug Fixes
+
+* startApp exceeded stdout buffer size ([ce8244f](https://github.com/gergof/automated-screenshots/commit/ce8244f98a07e80c1b16f4aabd7f0a47937e2473))
+
 ### [1.0.1](https://github.com/gergof/automated-screenshots/compare/v1.0.0...v1.0.1) (2021-01-14)
 
 

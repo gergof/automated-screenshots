@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.1](https://github.com/gergof/automated-screenshots/compare/v1.0.0...v1.0.1) (2021-01-14)
+
+
+### Bug Fixes
+
+* Don't crash when stdout is large ([4793191](https://github.com/gergof/automated-screenshots/commit/4793191b1188d12f45e20ac288cf4f9110bca0d6))
+
 ## [1.0.0](https://github.com/gergof/automated-screenshots/compare/v0.1.3...v1.0.0) (2021-01-13)
 
 ### [0.1.3](https://github.com/gergof/automated-screenshots/compare/v0.1.2...v0.1.3) (2021-01-13)

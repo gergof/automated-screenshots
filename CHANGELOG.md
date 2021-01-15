@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.2](https://github.com/gergof/automated-screenshots/compare/v1.1.1...v1.1.2) (2021-01-15)
+
+
+### Bug Fixes
+
+* **AndroidAgent:** Replace all white space characters not just the first one ([b5903b0](https://github.com/gergof/automated-screenshots/commit/b5903b076fec8f4d5527e1aedbe11e9ac340d7a3))
+
 ### [1.1.1](https://github.com/gergof/automated-screenshots/compare/v1.1.0...v1.1.1) (2021-01-15)
 
 

@@ -1,9 +1,10 @@
 import http, { Server as httpServer } from 'http';
 
 import { server as WebSocketServer } from 'websocket';
-import type { connection } from 'websocket';
+import type { connection, IMessage } from 'websocket';
 
 import type { Message } from './types';
+import { MessageType } from './types';
 import ScreenshotPack from './ScreenshotPack';
 
 export interface ClientManagerConfig {
@@ -59,7 +60,7 @@ class ClientManager {
 
 				this.client = request.accept();
 
-				this.client.once('message', message => {
+				this.client.once('message', (message: IMessage) => {
 					if (!this.isInitialized) {
 						this.isInitialized = true;
 
@@ -91,14 +92,34 @@ class ClientManager {
 			}
 
 			this.client.send(JSON.stringify(command));
-			this.client.once('message', message => {
+
+			const listener = (message: IMessage) => {
 				if (!message.utf8Data) {
 					reject('Client sent invalid response');
 					return;
 				}
 
-				resolve(JSON.parse(message.utf8Data));
-			});
+				const response: Message = JSON.parse(message.utf8Data);
+
+				if (response.type == MessageType.Ready) {
+					this.client?.off('message', listener);
+					resolve(response);
+				}
+			};
+			this.client.on('message', listener);
+		});
+	}
+
+	ack(): Promise<void> {
+		return new Promise((resolve, reject) => {
+			if (!this.client) {
+				reject();
+				return;
+			}
+
+			this.client.send(JSON.stringify({ type: MessageType.Ready }));
+
+			resolve();
 		});
 	}
 

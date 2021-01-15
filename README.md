@@ -151,5 +151,5 @@ If you have any questions feel free to contact me using Matrix on [#automated-sc
 ### Roadmap
 
 -   [ ] Add web agent using puppeteer
--   [ ] Allow clients to execute adb/simctl/puppeteer commands
+-   [x] Allow clients to execute adb/simctl/puppeteer commands
 -   [ ] Better handling of errors

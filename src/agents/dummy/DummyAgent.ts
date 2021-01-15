@@ -1,6 +1,7 @@
 import BaseAgent from '../BaseAgent';
 import { AgentConfig } from '../types';
 import Screenshot from '../../Screenshot';
+import type { Message } from '../../types';
 
 class DummyAgent extends BaseAgent {
 	constructor(config: AgentConfig, port: number) {
@@ -33,6 +34,12 @@ class DummyAgent extends BaseAgent {
 			'Screenshot taken for:',
 			`${screenshot.suite.name}/${screenshot.name}`
 		);
+
+		return Promise.resolve();
+	}
+
+	protected executeCommand(command: Message): Promise<void> {
+		console.log('Execute command:', command);
 
 		return Promise.resolve();
 	}

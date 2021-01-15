@@ -135,6 +135,11 @@ class IosAgent extends BaseAgent {
 
 		return;
 	}
+
+	protected executeCommand(): Promise<void> {
+		// we can't do anything from simctl :(
+		return Promise.resolve();
+	}
 }
 
 export default IosAgent;

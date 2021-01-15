@@ -3,7 +3,10 @@ export enum MessageType {
 	PrepareScreenshot = 'prepare-screenshot',
 	Ready = 'ready',
 	ScreenshotDone = 'done-screenshot',
-	SuiteDone = 'done-suite'
+	SuiteDone = 'done-suite',
+
+	InputText = 'input-text',
+	InputTouch = 'input-touch'
 }
 
 export type Message = {

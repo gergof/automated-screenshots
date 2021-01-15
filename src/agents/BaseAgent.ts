@@ -3,11 +3,14 @@ import stream from 'stream';
 
 import chalk from 'chalk';
 import kill from 'tree-kill';
+import type { IMessage } from 'websocket';
 
 import ClientManager from '../ClientManager';
 import ScreenshotPack from '../ScreenshotPack';
 import Screenshot from '../Screenshot';
 import ScreenshotSuite from '../ScreenshotSuite';
+import type { Message } from '../types';
+import { MessageType } from '../types';
 
 import { AgentConfig } from './types';
 
@@ -74,6 +77,26 @@ abstract class BaseAgent {
 			.then(cm => cm.waitForConnection())
 			.then(cm => {
 				this.log('info', 'Connected to client');
+				return cm;
+			})
+			.then(cm => {
+				this.clientManager.client?.on(
+					'message',
+					(message: IMessage) => {
+						if (message.utf8Data) {
+							const command: Message = JSON.parse(
+								message.utf8Data
+							);
+
+							if (command.type != MessageType.Ready) {
+								this.executeCommand(command).then(() =>
+									this.clientManager.ack()
+								);
+							}
+						}
+					}
+				);
+
 				return cm;
 			})
 			.catch(e => {
@@ -221,6 +244,7 @@ abstract class BaseAgent {
 	abstract takeScreenshots(): Promise<BaseAgent>;
 	abstract halt(): Promise<BaseAgent>;
 	protected abstract takeScreenshot(screenshot: Screenshot): Promise<void>;
+	protected abstract executeCommand(command: Message): Promise<void>;
 }
 
 export default BaseAgent;

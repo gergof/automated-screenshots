@@ -8,6 +8,8 @@ import filenamify from 'filenamify';
 
 import Screenshot from '../../Screenshot';
 import BaseAgent from '../BaseAgent';
+import type { Message } from '../../types';
+import { MessageType } from '../../types';
 
 import { AndroidAgentConfig } from './AndroidAgentConfig';
 
@@ -246,6 +248,52 @@ class AndroidAgent extends BaseAgent {
 		]);
 
 		return;
+	}
+
+	protected executeCommand(command: Message): Promise<void> {
+		switch (command.type) {
+			case MessageType.InputText:
+				return this.cmdExec(this.config.paths.adb, [
+					'shell',
+					'input',
+					'keyboard',
+					'text',
+					`"${command.payload || ''}"`
+				]).then(() => {});
+			case MessageType.InputTouch:
+				return this.cmdExecOutput(this.config.paths.adb, [
+					'shell',
+					'wm',
+					'size'
+				])
+					.then(output =>
+						output
+							.replace('Physical size: ', '')
+							.split('x')
+							.map(val => parseInt(val))
+					)
+					.then(screenSize => {
+						const xPercent: number = parseInt(
+							command.payload?.split('x')[0] || '0'
+						);
+						const yPercent: number = parseInt(
+							command.payload?.split('x')[1] || '0'
+						);
+						const x: number = (screenSize[0] * xPercent) / 100;
+						const y: number = (screenSize[1] * yPercent) / 100;
+
+						return this.cmdExec(this.config.paths.adb, [
+							'shell',
+							'input',
+							'tap',
+							x.toString(),
+							y.toString()
+						]);
+					})
+					.then(() => {});
+			default:
+				return Promise.resolve();
+		}
 	}
 }
 

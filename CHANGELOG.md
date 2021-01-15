@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.1](https://github.com/gergof/automated-screenshots/compare/v1.1.0...v1.1.1) (2021-01-15)
+
+
+### Bug Fixes
+
+* **AndroidAgent:** When inputting text white spaces should be escaped ([a88e54c](https://github.com/gergof/automated-screenshots/commit/a88e54ce8e9c9aba2333cb61cc608aa604db2e31))
+
 ## [1.1.0](https://github.com/gergof/automated-screenshots/compare/v1.0.2...v1.1.0) (2021-01-15)
 
 

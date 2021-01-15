@@ -258,7 +258,7 @@ class AndroidAgent extends BaseAgent {
 					'input',
 					'keyboard',
 					'text',
-					`"${command.payload?.replaceAll(' ', '\\ ') || ''}"`
+					`"${command.payload?.replace(/ /g, '\\ ') || ''}"`
 				]).then(() => {});
 			case MessageType.InputTouch:
 				return this.cmdExecOutput(this.config.paths.adb, [

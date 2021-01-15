@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.3](https://github.com/gergof/automated-screenshots/compare/v1.1.2...v1.1.3) (2021-01-15)
+
+
+### Bug Fixes
+
+* **AndroidAgent:** Use regex instead of replaceAll (which for some reason exists in chrome) ([61af51b](https://github.com/gergof/automated-screenshots/commit/61af51bb5d019dffedc51dcb0b63cc69e465c1dc))
+
 ### [1.1.2](https://github.com/gergof/automated-screenshots/compare/v1.1.1...v1.1.2) (2021-01-15)
 
 

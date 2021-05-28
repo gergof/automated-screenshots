@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/gergof/automated-screenshots/compare/v1.1.3...v1.2.0) (2021-05-28)
+
+
+### Features
+
+* Allow async startApp commands which are allowed to run in background ([040be5d](https://github.com/gergof/automated-screenshots/commit/040be5d6a59d4bef03d827d267e9ad17f97d9d01))
+
 ### [1.1.3](https://github.com/gergof/automated-screenshots/compare/v1.1.2...v1.1.3) (2021-01-15)
 
 

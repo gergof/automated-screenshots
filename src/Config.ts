@@ -21,6 +21,7 @@ const schema = Yup.object().shape({
 				output: Yup.string().required(),
 				startAppCommand: Yup.string().required(),
 				startAppTimeout: Yup.number().min(1).required(),
+				asyncStartApp: Yup.boolean().default(false),
 
 				// android only
 				paths: Yup.object().when(
@@ -142,6 +143,7 @@ class Config {
 								output: agentConfig.output,
 								startAppCommand: agentConfig.startAppCommand,
 								startAppTimeout: agentConfig.startAppTimeout,
+								asyncStartApp: agentConfig.asyncStartApp,
 								paths: {
 									adb: agentConfig.paths.adb,
 									emulator: agentConfig.paths.emulator,
@@ -162,6 +164,7 @@ class Config {
 								output: agentConfig.output,
 								startAppCommand: agentConfig.startAppCommand,
 								startAppTimeout: agentConfig.startAppTimeout,
+								asyncStartApp: agentConfig.asyncStartApp,
 								devices: agentConfig.devices || [],
 								time: agentConfig.time
 							};
@@ -173,7 +176,8 @@ class Config {
 								type: AgentType.dummy,
 								output: agentConfig.output,
 								startAppCommand: agentConfig.startAppCommand,
-								startAppTimeout: agentConfig.startAppTimeout
+								startAppTimeout: agentConfig.startAppTimeout,
+								asyncStartApp: agentConfig.asyncStartApp
 							};
 
 							return config;

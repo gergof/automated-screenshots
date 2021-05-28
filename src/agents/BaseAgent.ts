@@ -32,16 +32,25 @@ abstract class BaseAgent {
 		return new Promise((resolve, reject) => {
 			const proc = this.cmdSpawn(this.config.startAppCommand, []);
 
-			const killTimeout = setTimeout(() => {
-				if (proc.exitCode === null) {
-					this.log('error', 'Stating application exceeded timeout');
-					reject(new Error('startAppTimeout exceeded'));
-					kill(proc.pid);
-				}
-			}, this.config.startAppTimeout);
+			let killTimeout: NodeJS.Timeout | null = null;
+			if (!this.config.asyncStartApp) {
+				killTimeout = setTimeout(() => {
+					if (proc.exitCode === null) {
+						this.log(
+							'error',
+							'Starting application exceeded timeout'
+						);
+						reject(new Error('startAppTimeout exceeded'));
+						kill(proc.pid);
+					}
+				}, this.config.startAppTimeout);
+			}
 
 			proc.on('exit', code => {
-				clearTimeout(killTimeout);
+				if (killTimeout) {
+					clearTimeout(killTimeout);
+				}
+
 				if (code != 0) {
 					this.log(
 						'error',
@@ -67,6 +76,10 @@ abstract class BaseAgent {
 					error.message
 				);
 			});
+
+			if (this.config.asyncStartApp) {
+				resolve(this);
+			}
 		});
 	}
 

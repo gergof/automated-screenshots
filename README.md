@@ -81,6 +81,7 @@ type: android
 output: 'folder for the screenshots'
 startAppCommand: 'command to execute to start your application'
 startAppTimeout: 'wait this much for your application to start'
+asyncStartApp: 'boolean: if true timeout is ignored and the start command will be allowed to run in the background. Ideal for servers'
 
 paths:
     adb: 'adb executable'
@@ -116,6 +117,7 @@ type: ios
 output: 'folder for the screenshots'
 startAppCommand: 'command to execute to start your application'
 startAppTimeout: 'wait this much for your application to start'
+asyncStartApp: 'boolean: if true timeout is ignored and the start command will be allowed to run in the background. Ideal for servers'
 
 devices:
     - '<device_name>;<runtime>'

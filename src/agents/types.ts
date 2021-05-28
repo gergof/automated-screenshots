@@ -10,4 +10,5 @@ export interface AgentConfig {
 	output: string;
 	startAppCommand: string;
 	startAppTimeout: number;
+	asyncStartApp: boolean;
 }
